@@ -3,6 +3,7 @@ using GameStore.Api.DTOs;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+// Shortest way to create lists
 List<GameDto> games = [
     new (1, "Street Fighter II", "Fighting", 19.99m, new DateOnly(1992, 7, 15)),
     new (2, "The Legend of Zelda: Ocarina of Time", "Action-Adventure", 29.99m, new DateOnly(1998, 11, 21)),
