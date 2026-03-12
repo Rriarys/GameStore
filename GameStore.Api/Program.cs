@@ -63,7 +63,7 @@ app.MapDelete("games/{id}", (int id) =>
 {
     var index = games.FindIndex(game => game.Id == id);
 
-    if (index == -1) // Need to check if the game is REALLY exists before trying to delete it
+    if (index == -1) // Need to check if the game is REALLY exists before trying to delete it, so I dont want to use lazy way like games.RemoveAll(game => game.Id == id).
         return Results.NotFound(); // HTTP 404
     
     games.RemoveAt(index);
