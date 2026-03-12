@@ -1,5 +1,7 @@
 using GameStore.Api.DTOs;
 
+const string GetGameEndpointName = "GetGame"; // Local constant for GetGame endpoint
+
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
@@ -16,11 +18,9 @@ List<GameDto> games = [
 // GET /games
 app.MapGet("/games", () => games);
 
-const string GetGameEndpointName = "GetGame";
-
 // GET /games/{id}
 app.MapGet("/games/{id}", (int id ) => games.Find(game => game.Id == id))
-    .WithName(GetGameEndpointName); // Introduce like the local constant to avoid typos and make it easier to change the endpoint name in the future.
+    .WithName(GetGameEndpointName); // Introduce like the local constant to avoid typos and make it easier to change the endpoint name in the future
 
 // POST /games
 app.MapPost("/games", (CreateGameDto newGame) =>
@@ -35,7 +35,40 @@ app.MapPost("/games", (CreateGameDto newGame) =>
 
     games.Add(game);
 
-    return Results.CreatedAtRoute("GetGame", new {id = game.Id}, game); // HTTP 201 + Location header + response body. 
+    return Results.CreatedAtRoute(GetGameEndpointName, new {id = game.Id}, game); // HTTP 201 + Location header + response body
+});
+
+// PUT /games/{id}
+app.MapPut("/games/{id}", (int id, UpdateGameDto updatedGame) =>
+{
+    var index = games.FindIndex(game => game.Id == id);
+
+    if (index == -1) // Check if the game with this index exists
+        return Results.NotFound(); // HTTP 404
+    
+
+    games[index] = new GameDto(
+        id,
+        updatedGame.Name,
+        updatedGame.Genre,
+        updatedGame.Price,
+        updatedGame.ReleaseDate
+    );
+
+    return Results.NoContent(); // HTTP 204
+});
+
+// DELETE /games/{id}
+app.MapDelete("games/{id}", (int id) =>
+{
+    var index = games.FindIndex(game => game.Id == id);
+
+    if (index == -1) // Need to check if the game is REALLY exists before trying to delete it
+        return Results.NotFound(); // HTTP 404
+    
+    games.RemoveAt(index);
+
+    return Results.NoContent(); // HTTP 204
 });
 
 app.Run();
