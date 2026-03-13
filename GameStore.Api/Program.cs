@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using GameStore.Api.DTOs;
 
 const string GetGameEndpointName = "GetGame"; // Local constant for GetGame endpoint
@@ -19,7 +20,13 @@ List<GameDto> games = [
 app.MapGet("/games", () => games);
 
 // GET /games/{id}
-app.MapGet("/games/{id}", (int id ) => games.Find(game => game.Id == id))
+app.MapGet("/games/{id}", (int id ) =>
+{
+    var game = games.Find(game => game.Id == id);
+    return game is null 
+        ? Results.NotFound() 
+        : Results.Ok(game); // HTTP 404 if not found, otherwise HTTP 200 with the game in the response body
+})
     .WithName(GetGameEndpointName); // Introduce like the local constant to avoid typos and make it easier to change the endpoint name in the future
 
 // POST /games
