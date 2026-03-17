@@ -12,4 +12,6 @@ var app = builder.Build();
 
 app.MapGamesEndpoints(); // Map the endpoints defined in GamesEndpoints class
 
+app.MigrateDb(); // Apply any pending migrations to the database
+
 app.Run();
