@@ -15,7 +15,8 @@ public static class DataExtensions
 
     public static void AddGameStoreDb(this WebApplicationBuilder builder) // Extension method to add the games genres to the database if they don't already exist
     {
-        var connectionString = "Data Source=Data/GameStore.db";
+        var connectionString = builder.Configuration.GetConnectionString("GameStore") 
+                               ?? throw new InvalidOperationException("Connection string 'GameStore' not found."); // Get the connection string from the configuration, throw an exception if it is not found
 builder.Services.AddSqlite<GameStoreContext>
     (
         connectionString,
