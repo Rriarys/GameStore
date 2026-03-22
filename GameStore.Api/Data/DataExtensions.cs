@@ -17,25 +17,25 @@ public static class DataExtensions
     {
         var connectionString = builder.Configuration.GetConnectionString("GameStore") 
                                ?? throw new InvalidOperationException("Connection string 'GameStore' not found."); // Get the connection string from the configuration, throw an exception if it is not found
-builder.Services.AddSqlite<GameStoreContext>
-    (
-        connectionString,
-        optionsAction: options => options.UseSeeding((context, _) =>
-        {
-            if (!context.Set<Genre>().Any())
+         builder.Services.AddSqlite<GameStoreContext>
+        (
+            connectionString,
+            optionsAction: options => options.UseSeeding((context, _) =>
             {
-                context.Set<Genre>().AddRange(
-                    new Genre { Name = "Fighting" },
-                    new Genre { Name = "Action-Adventure" },
-                    new Genre { Name = "Sandbox" },
-                    new Genre { Name = "RPG" },
-                    new Genre { Name = "Puzzle-Platformer" },
-                    new Genre { Name = "Platformer" }
-                );
+                if (!context.Set<Genre>().Any())
+                {
+                    context.Set<Genre>().AddRange(
+                        new Genre { Name = "Fighting" },
+                        new Genre { Name = "Action-Adventure" },
+                        new Genre { Name = "Sandbox" },
+                        new Genre { Name = "RPG" },
+                        new Genre { Name = "Puzzle-Platformer" },
+                        new Genre { Name = "Platformer" }
+                    );
 
-                context.SaveChanges();
-            }
-        })
-    ); 
+                    context.SaveChanges();
+                }
+            })
+        ); 
     }
 }
